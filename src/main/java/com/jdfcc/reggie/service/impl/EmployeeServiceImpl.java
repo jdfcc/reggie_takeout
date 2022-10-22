@@ -45,9 +45,9 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         return R.success("success quit");
     }
 
-    public R<String> saveEmployee(Employee employee){
+    public R<String> saveEmployee(Employee employee) {
         service.save(employee);
-        return R.success("Creat employee success");
+        return R.success("Succeed to create employee");
     }
 
 }
