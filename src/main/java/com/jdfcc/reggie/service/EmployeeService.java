@@ -1,5 +1,6 @@
 package com.jdfcc.reggie.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jdfcc.reggie.common.R;
 import com.jdfcc.reggie.entity.Employee;
@@ -11,6 +12,9 @@ public interface EmployeeService extends IService<Employee> {
 
     public R logout(HttpServletRequest request);
 
-    public R<String> saveEmployee(Employee employee);
+    public R saveEmployee(Employee employee);
 
+    public R<Page> selectPage(int page,int size,String name);
+
+    public R alterStatus(HttpServletRequest request,Employee employee);
 }

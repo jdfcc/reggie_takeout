@@ -1,6 +1,7 @@
 package com.jdfcc.reggie.common;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,12 +17,10 @@ public class GlobalExceptionHandler{
 
     /**
      * 异常处理方法
-     * @return
      */
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public R exceptionhandler(SQLIntegrityConstraintViolationException exception){
+    public R<String> exceptionhandler(@NotNull SQLIntegrityConstraintViolationException exception){
         log.error("Error: {}",exception.getMessage());
-
         if(exception.getMessage().contains("Duplicate")){
             String[] msgs=exception.getMessage().split(" ");
             String msg=msgs[2]+"already exists";
