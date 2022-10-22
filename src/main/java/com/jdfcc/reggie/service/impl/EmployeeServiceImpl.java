@@ -44,4 +44,10 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         request.getSession().removeAttribute("employee");
         return R.success("success quit");
     }
+
+    public R<String> saveEmployee(Employee employee){
+        service.save(employee);
+        return R.success("Creat employee success");
+    }
+
 }

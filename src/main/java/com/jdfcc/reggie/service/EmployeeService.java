@@ -11,4 +11,6 @@ public interface EmployeeService extends IService<Employee> {
 
     public R logout(HttpServletRequest request);
 
+    public R<String> saveEmployee(Employee employee);
+
 }
