@@ -13,4 +13,5 @@ public class ReggieApplication {
         SpringApplication.run(ReggieApplication.class);
         log.info("Run Successfully.....");
     }
+
 }
