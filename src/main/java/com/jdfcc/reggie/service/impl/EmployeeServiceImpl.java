@@ -57,8 +57,9 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
     public R alterStatus(HttpServletRequest request, Employee employee) {
 //        LambdaQueryWrapper<Employee> wrapper = new LambdaQueryWrapper<>();
 //        wrapper.eq(Employee::getId, employee.getStatus());
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser((Long) request.getSession().getAttribute("employee"));
+
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setUpdateUser((Long) request.getSession().getAttribute("employee"));
         mapper.updateById(employee);
         return R.success("Successfully update");
     }
@@ -74,5 +75,13 @@ public class EmployeeServiceImpl extends ServiceImpl<EmployeeMapper, Employee> i
         return R.success(val);
 //        service.page(pageInfo,wrapper);
 //        return R.success(pageInfo);
+    }
+
+    @Override
+    public R<Employee> getByID(Long id) {
+        Employee employee = mapper.selectById(id);
+        if (employee != null)
+            return R.success(employee);
+        return R.error("There is no such employee");
     }
 }

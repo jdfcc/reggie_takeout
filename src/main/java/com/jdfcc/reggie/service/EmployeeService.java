@@ -17,4 +17,6 @@ public interface EmployeeService extends IService<Employee> {
     public R<Page> selectPage(int page,int size,String name);
 
     public R alterStatus(HttpServletRequest request,Employee employee);
+
+    public R<Employee> getByID(Long id);
 }

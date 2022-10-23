@@ -45,16 +45,17 @@ public class EmployeeController {
         //初始化密码,对密码进行md5加密
         log.info("Creat employee: {}", employee.toString());
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
-        Long empID = (Long) request.getSession().getAttribute("employee");
-        employee.setCreateUser(empID);
-        employee.setUpdateUser(empID);
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
+//        Long empID = (Long) request.getSession().getAttribute("employee");
+//        employee.setCreateUser(empID);
+//        employee.setUpdateUser(empID);
         return service.saveEmployee(employee);
     }
 
     /**
      * 分页查询
+     *
      * @param page
      * @param pageSize
      * @param name
@@ -62,20 +63,35 @@ public class EmployeeController {
      */
     @GetMapping("/page")
     public R<Page> selectPage(int page, int pageSize, String name) {
-        log.info("page = {}, size= {}, name= {}",page,pageSize,name);
+        log.info("page = {}, size= {}, name= {}", page, pageSize, name);
         return service.selectPage(page, pageSize, name);
     }
 
     /**
      * 修改员工账号状态
+     *
      * @param request
      * @param employee
      * @return
      */
     @PutMapping
-    public R alterEmployee(HttpServletRequest request,@RequestBody Employee employee){
-        log.info("Update: {}",employee.toString());
-        R r=service.alterStatus(request,employee);
+    public R alterEmployee(HttpServletRequest request, @RequestBody Employee employee) {
+        log.info("Update: {}", employee.toString());
+        R r = service.alterStatus(request, employee);
+        return r;
+    }
+
+    /**
+     * 根据id查询员工消息
+     *
+     * @param id
+     * @return
+     */
+
+    @GetMapping("{id}")
+    public R<Employee> getByID(@PathVariable Long id) {
+        log.info("The user id is: {}", id);
+        R r = service.getByID(id);
         return r;
     }
 
