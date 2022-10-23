@@ -53,4 +53,18 @@ public class CategoryController {
         service.remove(ids);
         return R.success("Deleted Success");
     }
+
+    /**
+     * 根据id修改分类消息
+     *
+     * @param category
+     * @return
+     */
+
+    @PutMapping
+    public R update(@RequestBody Category category) {
+        log.info("Category info: {}", category);
+        service.updateById(category);
+        return R.success("Success update");
+    }
 }
