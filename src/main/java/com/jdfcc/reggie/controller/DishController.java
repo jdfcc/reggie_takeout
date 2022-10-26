@@ -3,6 +3,7 @@ package com.jdfcc.reggie.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jdfcc.reggie.common.R;
+import com.jdfcc.reggie.dto.DishDto;
 import com.jdfcc.reggie.entity.Dish;
 import com.jdfcc.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ public class DishController {
 
     @GetMapping("/page")
     public R<Page> selectPage(int page, int pageSize, String name) {
-        R r = service.selectPage(page, pageSize, name);
+        R r = service.selectPageWithFlavor(page, pageSize, name);
         return r;
     }
 
@@ -45,18 +46,43 @@ public class DishController {
         return r;
     }
 
+    /**
+     * 新增菜品
+     *
+     * @param dish
+     * @return
+     */
     @PostMapping
-    public R<String> add(@RequestBody Dish dish) {
+    public R<String> add(@RequestBody DishDto dish) {
         log.info("Dish: {}", dish.toString());
-        R r = service.add(dish);
-        return r;
+        service.saveWithFlavor(dish);
+        return R.success("Successfully add");
     }
 
     @GetMapping("/{ids}")
-    public R<Dish> get(@PathVariable Long ids) {
+    public R<DishDto> get(@PathVariable Long ids) {
         log.info("id: {}", ids);
-        Dish dish = service.search(ids);
+        DishDto dish = service.getByIdWithFlavor(ids);
         return R.success(dish);
+    }
+
+    /**
+     * 修改菜品
+     *
+     * @param dishDto
+     * @return
+     */
+    @PutMapping
+    public R update(@RequestBody DishDto dishDto) {
+        service.updateWithFlavor(dishDto);
+        return R.success("Successfully update");
+    }
+
+    @DeleteMapping
+    public R<String> delete( Long ids) {
+        log.info("Delete ids: {}",ids);
+        service.deleteWithFlavor(ids);
+        return R.success("Successfully delete");
     }
 
 }

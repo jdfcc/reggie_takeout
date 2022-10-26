@@ -1,4 +1,4 @@
-package com.jdfcc.reggie.Dto;
+package com.jdfcc.reggie.dto;
 
 import com.jdfcc.reggie.entity.OrderDetail;
 import com.jdfcc.reggie.entity.Orders;

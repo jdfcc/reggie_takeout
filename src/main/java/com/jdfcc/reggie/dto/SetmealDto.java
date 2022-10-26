@@ -1,4 +1,4 @@
-package com.jdfcc.reggie.Dto;
+package com.jdfcc.reggie.dto;
 
 import com.jdfcc.reggie.entity.Setmeal;
 import com.jdfcc.reggie.entity.SetmealDish;

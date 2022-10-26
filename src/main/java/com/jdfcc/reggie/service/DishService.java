@@ -3,16 +3,25 @@ package com.jdfcc.reggie.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jdfcc.reggie.common.R;
+import com.jdfcc.reggie.dto.DishDto;
 import com.jdfcc.reggie.entity.Dish;
 
 public interface DishService extends IService<Dish> {
-    public R<Page> selectPage(int page,int size,String name);
+
 
     public R<String> stopSeal(String id);
 
     public R<String> beginSeal(String id);
 
-    public R<String> add(Dish dish);
+    public void saveWithFlavor(DishDto dish);
 
-    public Dish search(Long id);
+    public R<Page> selectPageWithFlavor(int page, int size, String name);
+
+    public DishDto getByIdWithFlavor(Long id);
+
+    public void updateWithFlavor(DishDto dishDto);
+
+    public void deleteWithFlavor(Long ids);
+
+
 }
