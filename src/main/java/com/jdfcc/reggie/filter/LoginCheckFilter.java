@@ -30,7 +30,7 @@ public class LoginCheckFilter implements Filter {
                 "employee/logout",
                 "/backend/**",
                 "/front/**",
-                "/test/**"
+//                "/common/**"
         };
         String requestURI = request.getRequestURI();
         log.info("get request: {} ", requestURI);

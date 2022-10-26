@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.jdfcc.reggie.common.R;
 import com.jdfcc.reggie.entity.Category;
 
+import java.util.List;
+
 
 public interface CategoryService extends IService<Category> {
 
@@ -19,4 +21,5 @@ public interface CategoryService extends IService<Category> {
      */
     public void remove(Long id);
 
+    public R<List<Category>> selectList(int type);
 }

@@ -8,7 +8,11 @@ import com.jdfcc.reggie.entity.Dish;
 public interface DishService extends IService<Dish> {
     public R<Page> selectPage(int page,int size,String name);
 
-    public R<String> stopSeal(Long id);
+    public R<String> stopSeal(String id);
 
-    public R<String> beginSeal(Long id);
+    public R<String> beginSeal(String id);
+
+    public R<String> add(Dish dish);
+
+    public Dish search(Long id);
 }

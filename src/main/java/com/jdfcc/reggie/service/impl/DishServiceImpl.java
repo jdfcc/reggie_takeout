@@ -29,7 +29,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
     }
 
     @Override
-    public R<String> stopSeal(Long id) {
+    public R<String> stopSeal(String id) {
         LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper();
         wrapper.eq(Dish::getId, id);
         Dish dish = mapper.selectOne(wrapper);
@@ -39,12 +39,29 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
     }
 
     @Override
-    public R<String> beginSeal(Long id) {
+    public R<String> beginSeal(String id) {
         LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper();
-        wrapper.eq(Dish::getId, id);
-        Dish dish = mapper.selectOne(wrapper);
-        dish.setStatus(1);
-        mapper.update(dish, wrapper);
+        String[] ids = id.split(",");
+        for (int i = 0; i < ids.length; i++) {
+            String val = ids[i];
+            wrapper.eq(Dish::getId, val);
+            Dish dish = mapper.select(val);
+            dish.setStatus(1);
+            mapper.update(dish, wrapper);
+        }
         return R.success("Successfully set status=1");
+    }
+
+    @Override
+    public R<String> add(Dish dish) {
+        mapper.insert(dish);
+        return R.success("Successfully add");
+    }
+
+    @Override
+    public Dish search(Long id) {
+        LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Dish::getId, id);
+        return mapper.selectOne(wrapper);
     }
 }

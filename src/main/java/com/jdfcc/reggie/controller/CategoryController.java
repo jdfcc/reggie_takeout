@@ -67,4 +67,11 @@ public class CategoryController {
         service.updateById(category);
         return R.success("Success update");
     }
+
+    @GetMapping("/list")
+    public R<Category> selectList(int type) {
+        R r = service.selectList(type);
+        return r;
+    }
+
 }

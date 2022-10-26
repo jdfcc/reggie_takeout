@@ -7,10 +7,7 @@ import com.jdfcc.reggie.entity.Dish;
 import com.jdfcc.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,22 +27,36 @@ public class DishController {
     }
 
     @PostMapping("/status/0")
-    public R<String> setStatusOff(Long ids) {
+    public R<String> setStatusOff(String ids) {
         String id = String.valueOf(ids);
         if (id.contains(",")) {
 //            List<Long> list = new ArrayList<>();
             log.info("many");
         }
 //        log.info(String.valueOf(ids));
-            R r = service.stopSeal(ids);
+        R r = service.stopSeal(ids);
         return r;
     }
 
     @PostMapping("/status/1")
     public R<String> setStatusOn(String ids) {
         log.info(String.valueOf(ids));
-        R r = service.beginSeal(Long.valueOf(ids));
+        R r = service.beginSeal(ids);
         return r;
+    }
+
+    @PostMapping
+    public R<String> add(@RequestBody Dish dish) {
+        log.info("Dish: {}", dish.toString());
+        R r = service.add(dish);
+        return r;
+    }
+
+    @GetMapping("/{ids}")
+    public R<Dish> get(@PathVariable Long ids) {
+        log.info("id: {}", ids);
+        Dish dish = service.search(ids);
+        return R.success(dish);
     }
 
 }

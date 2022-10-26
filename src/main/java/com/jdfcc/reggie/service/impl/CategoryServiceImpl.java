@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @Slf4j
@@ -70,5 +72,14 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
 
         //正常删除分类
         super.removeById(id);
+    }
+
+    @Override
+    public R<List<Category>> selectList(int type) {
+        LambdaQueryWrapper<Category> wrapper=new LambdaQueryWrapper<>();
+        wrapper.eq(Category::getType,type);
+        wrapper.orderByAsc(Category::getUpdateTime);
+        List<Category> list = mapper.selectList(wrapper);
+        return R.success(list);
     }
 }
