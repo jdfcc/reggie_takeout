@@ -79,7 +79,7 @@ public class DishController {
     }
 
     @DeleteMapping
-    public R<String> delete( Long ids) {
+    public R<String> delete( String ids) {
         log.info("Delete ids: {}",ids);
         service.deleteWithFlavor(ids);
         return R.success("Successfully delete");

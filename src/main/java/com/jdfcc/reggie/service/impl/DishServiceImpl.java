@@ -84,20 +84,22 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
     @Override
     public R<String> stopSeal(String id) {
-        LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper();
-        wrapper.eq(Dish::getId, id);
-        Dish dish = mapper.selectOne(wrapper);
-        dish.setStatus(0);
-        mapper.update(dish, wrapper);
+        String[] ids = id.split(",");
+        for (String val : ids) {
+            LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper();
+            wrapper.eq(Dish::getId, val);
+            Dish dish = mapper.selectOne(wrapper);
+            dish.setStatus(0);
+            mapper.update(dish, wrapper);
+        }
         return R.success("Successfully set status=0");
     }
 
     @Override
     public R<String> beginSeal(String id) {
-        LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper();
         String[] ids = id.split(",");
-        for (int i = 0; i < ids.length; i++) {
-            String val = ids[i];
+        for (String val : ids) {
+            LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper();
             wrapper.eq(Dish::getId, val);
             Dish dish = mapper.select(val);
             dish.setStatus(1);
@@ -131,7 +133,6 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
     }
 
 
-
     /**
      * 根据id查询对应菜品信息和口味信息
      *
@@ -141,8 +142,8 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
     @Override
     public DishDto getByIdWithFlavor(Long id) {
         Dish dish = this.getById(id);
-        DishDto dishDto=new DishDto();
-        BeanUtils.copyProperties(dish,dishDto);
+        DishDto dishDto = new DishDto();
+        BeanUtils.copyProperties(dish, dishDto);
         LambdaQueryWrapper<DishFlavor> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(DishFlavor::getDishId, id);
         List<DishFlavor> flavors = dishFlavorService.list(wrapper);
@@ -153,21 +154,22 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
     /**
      * 更新dish表以及flavor表
+     *
      * @param dishDto
      */
     @Override
     @Transactional
     public void updateWithFlavor(DishDto dishDto) {
-        this.updateById(dishDto );
-        LambdaQueryWrapper<DishFlavor> wrapper=new LambdaQueryWrapper<>();
-        wrapper.eq(DishFlavor::getDishId,dishDto.getId());
+        this.updateById(dishDto);
+        LambdaQueryWrapper<DishFlavor> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(DishFlavor::getDishId, dishDto.getId());
         //根据id删除flavor表里面的数据
         dishFlavorService.remove(wrapper);
 
         //再将数据插入至flavor表
-        List<DishFlavor> flavorList=dishDto.getFlavors();
-        List<DishFlavor> flavorList1=new ArrayList<>();
-        for(DishFlavor temp:flavorList){
+        List<DishFlavor> flavorList = dishDto.getFlavors();
+        List<DishFlavor> flavorList1 = new ArrayList<>();
+        for (DishFlavor temp : flavorList) {
             temp.setDishId(dishDto.getId());
             flavorList1.add(temp);
         }
@@ -176,19 +178,23 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
     @Override
     @Transactional
-    public void deleteWithFlavor(Long ids) {
-        //删除dish表里面的数据
-        LambdaQueryWrapper<Dish> dishLambdaQueryWrapper=new LambdaQueryWrapper<>();
-        dishLambdaQueryWrapper.eq(Dish::getId,ids);
-        this.remove(dishLambdaQueryWrapper);
-        //删除dishFlavor表里面的数据
-        LambdaQueryWrapper<DishFlavor> dishFlavorLambdaQueryWrapper=new LambdaQueryWrapper<>();
-        dishFlavorLambdaQueryWrapper.eq(DishFlavor::getDishId,ids);
-        //获取集合并遍历删除
-        List<DishFlavor> flavors = dishFlavorService.list(dishFlavorLambdaQueryWrapper);
-        for(DishFlavor temp:flavors){
-            dishFlavorService.removeById(temp.getId());
+    public void deleteWithFlavor(String id) {
+        String[] val = id.split(",");
+        for (String temp_val : val) {
+            //删除dish表里面的数据
+            LambdaQueryWrapper<Dish> dishLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            dishLambdaQueryWrapper.eq(Dish::getId, temp_val);
+            this.remove(dishLambdaQueryWrapper);
+            //删除dishFlavor表里面的数据
+            LambdaQueryWrapper<DishFlavor> dishFlavorLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            dishFlavorLambdaQueryWrapper.eq(DishFlavor::getDishId, temp_val);
+            //获取集合并遍历删除
+            List<DishFlavor> flavors = dishFlavorService.list(dishFlavorLambdaQueryWrapper);
+            for (DishFlavor temp : flavors) {
+                dishFlavorService.removeById(temp.getId());
+            }
         }
+
     }
 }
 
