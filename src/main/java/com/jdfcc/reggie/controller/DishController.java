@@ -10,8 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+
 
 @Slf4j
 @RestController
@@ -79,10 +79,18 @@ public class DishController {
     }
 
     @DeleteMapping
-    public R<String> delete( String ids) {
-        log.info("Delete ids: {}",ids);
+    public R<String> delete(String ids) {
+        log.info("Delete ids: {}", ids);
         service.deleteWithFlavor(ids);
         return R.success("Successfully delete");
+    }
+
+    @GetMapping("/list")
+    public R<List> select(Long categoryId) {
+        LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Dish::getCategoryId, categoryId);
+        List<Dish> list = service.list(wrapper);
+        return R.success(list);
     }
 
 }
