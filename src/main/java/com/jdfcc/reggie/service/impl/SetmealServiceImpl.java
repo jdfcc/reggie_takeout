@@ -50,7 +50,6 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
 
         LambdaQueryWrapper<Setmeal> setmealLambdaQueryWrapper = new LambdaQueryWrapper<>();
         setmealLambdaQueryWrapper.like(name != null, Setmeal::getName, name);
-        setmealLambdaQueryWrapper.orderByAsc(Setmeal::getUpdateTime);
         Page listPage = setmealMapper.selectPage(PageInfo, setmealLambdaQueryWrapper);
 
         BeanUtils.copyProperties(listPage, setmealDtoPage, "records");
@@ -133,7 +132,7 @@ public class SetmealServiceImpl extends ServiceImpl<SetmealMapper, Setmeal> impl
         LambdaQueryWrapper<Setmeal> wrapper = new LambdaQueryWrapper();
         wrapper.eq(Setmeal::getId, id);
         Setmeal setmeal = setmealMapper.selectOne(wrapper);
-        setmeal.setStatus(0);
+        setmeal.setStatus(status);
         setmealMapper.update(setmeal, wrapper);
     }
 

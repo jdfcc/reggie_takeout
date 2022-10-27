@@ -3,7 +3,6 @@ package com.jdfcc.reggie.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jdfcc.reggie.common.R;
-import com.jdfcc.reggie.dto.DishDto;
 import com.jdfcc.reggie.dto.SetmealDto;
 import com.jdfcc.reggie.entity.Setmeal;
 import com.jdfcc.reggie.entity.SetmealDish;
@@ -82,10 +81,12 @@ public class SetMealController {
         return R.success("Successfully delete");
     }
 
-//    @PostMapping("/status/{status}")
-//    public R<String> SetStatus(@PathVariable int status, String ids) {
-//        log.info("Status: {}", status);
-//        service.setStatus(status, ids);
-//        return R.success("Successfully update");
-//    }
+    @PostMapping("/status/{status}")
+    public R<String> SetStatus(@PathVariable int status, String ids) {
+        log.info("Id: {},Status: {}", ids, status);
+        String[] vals = ids.split(",");
+        for (String val : vals)
+            service.setStatus(status, val);
+        return R.success("Successfully update");
+    }
 }
