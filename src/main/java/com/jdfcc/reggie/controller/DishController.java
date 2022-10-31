@@ -4,12 +4,19 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jdfcc.reggie.common.R;
 import com.jdfcc.reggie.dto.DishDto;
+import com.jdfcc.reggie.dto.SetmealDto;
 import com.jdfcc.reggie.entity.Dish;
+import com.jdfcc.reggie.entity.DishFlavor;
+import com.jdfcc.reggie.entity.Setmeal;
+import com.jdfcc.reggie.entity.SetmealDish;
+import com.jdfcc.reggie.service.DishFlavorService;
 import com.jdfcc.reggie.service.DishService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,6 +27,9 @@ public class DishController {
 
     @Autowired
     private DishService service;
+
+    @Autowired
+    private DishFlavorService flavorService;
 
     @GetMapping("/page")
     public R<Page> selectPage(int page, int pageSize, String name) {
@@ -85,12 +95,30 @@ public class DishController {
         return R.success("Successfully delete");
     }
 
+    /**
+     * 根据categoryID获取菜品信息并返回
+     * @param dish
+     * @return
+     */
     @GetMapping("/list")
-    public R<List> select(Long categoryId) {
+    public R<List> select(Dish dish) {
+
         LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(Dish::getCategoryId, categoryId);
+        wrapper.eq(dish.getCategoryId()!=null,Dish::getCategoryId, dish.getCategoryId());
         List<Dish> list = service.list(wrapper);
-        return R.success(list);
+        List<DishDto> dishDtos = new ArrayList<>();
+
+        for (Dish val : list) {
+            DishDto dto = new DishDto();
+            BeanUtils.copyProperties(val, dto);
+            LambdaQueryWrapper<DishFlavor> flavorWrapper = new LambdaQueryWrapper<>();
+            flavorWrapper.eq(DishFlavor::getDishId, val.getId());
+            List<DishFlavor> dishFlavors = flavorService.list(flavorWrapper);
+            dto.setFlavors(dishFlavors);
+            dishDtos.add(dto);
+        }
+
+        return R.success(dishDtos);
     }
 
 }

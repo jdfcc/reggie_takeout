@@ -1,5 +1,6 @@
 package com.jdfcc.reggie.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.jdfcc.reggie.dto.SetmealDto;
@@ -16,5 +17,6 @@ public interface SetMealService extends IService<Setmeal> {
     public void delete(String id);
 
     public void setStatus(int status,String id);
+
 
 }

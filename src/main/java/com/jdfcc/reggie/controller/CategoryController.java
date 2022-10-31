@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * 分类管理
  */
@@ -69,9 +71,20 @@ public class CategoryController {
     }
 
     @GetMapping("/list")
-    public R<Category> selectList(int type) {
-        R r = service.selectList(type);
-        return r;
+//    public R<Category> selectList(int type) {
+//        R r = service.selectList(type);
+//        return r;
+//    }
+    public R<List<Category>> list(Category category){
+        //条件构造器
+        LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
+        //添加条件
+        queryWrapper.eq(category.getType() != null,Category::getType,category.getType());
+        //添加排序条件
+        queryWrapper.orderByAsc(Category::getSort).orderByDesc(Category::getUpdateTime);
+
+        List<Category> list = service.list(queryWrapper);
+        return R.success(list);
     }
 
 }

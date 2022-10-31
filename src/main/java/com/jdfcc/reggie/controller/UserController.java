@@ -38,7 +38,7 @@ public class UserController {
         if (StringUtils.isEmpty(phone))
             return R.error("Empty phone number");
         String code = ValidateCodeUtils.generateValidateCode(4).toString();
-        log.info("Code:{}", code);
+        log.info("Verification:{}", code);
 //        发送验证码
 //        SMSUtils.sendMessage("瑞吉外卖","empty",phone,code);
         session.setAttribute(phone, code);
