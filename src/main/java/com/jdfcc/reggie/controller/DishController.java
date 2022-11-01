@@ -105,6 +105,8 @@ public class DishController {
 
         LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(dish.getCategoryId()!=null,Dish::getCategoryId, dish.getCategoryId());
+        wrapper.eq(dish.getStatus() != null, Dish::getStatus, dish.getStatus());
+        wrapper.orderByDesc(Dish::getUpdateTime);
         List<Dish> list = service.list(wrapper);
         List<DishDto> dishDtos = new ArrayList<>();
 

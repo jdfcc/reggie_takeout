@@ -97,24 +97,26 @@ public class SetMealController {
      * 根据套餐id获取套餐
      */
     @GetMapping("/list")
-    public R<List<SetmealDto>> getSetMeal(Setmeal setmeal) {
+    public R<List<Setmeal>> getSetMeal(Setmeal setmeal) {
         //获得该分类下所有套餐
         LambdaQueryWrapper<Setmeal> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(setmeal.getCategoryId() != null, Setmeal::getCategoryId, setmeal.getCategoryId());
+        wrapper.eq(setmeal.getStatus() != null, Setmeal::getStatus, setmeal.getStatus());
+        wrapper.orderByDesc(Setmeal::getUpdateTime);
         List<Setmeal> setmealList = service.list(wrapper);
         List<SetmealDto> setmealDtos = new ArrayList<>();
 
-        for (Setmeal val : setmealList) {
-            SetmealDto dto = new SetmealDto();
-            BeanUtils.copyProperties(val, dto);
-            LambdaQueryWrapper<SetmealDish> dishWrapper = new LambdaQueryWrapper<>();
-            dishWrapper.eq(SetmealDish::getSetmealId, val.getId());
-            List<SetmealDish> setmealDishes = dishService.list(dishWrapper);
-            dto.setSetmealDishes(setmealDishes);
-            setmealDtos.add(dto);
-        }
+//        for (Setmeal val : setmealList) {
+//            SetmealDto dto = new SetmealDto();
+//            BeanUtils.copyProperties(val, dto);
+//            LambdaQueryWrapper<SetmealDish> dishWrapper = new LambdaQueryWrapper<>();
+//            dishWrapper.eq(SetmealDish::getSetmealId, val.getId());
+//            List<SetmealDish> setmealDishes = dishService.list(dishWrapper);
+//            dto.setSetmealDishes(setmealDishes);
+//            setmealDtos.add(dto);
+//        }
 
-        return R.success(setmealDtos);
+        return R.success(setmealList);
     }
 
     @GetMapping("/dish/{id}")
@@ -126,7 +128,12 @@ public class SetMealController {
         BeanUtils.copyProperties(setmeal, dto);
         LambdaQueryWrapper<SetmealDish> dishWrapper = new LambdaQueryWrapper<>();
         dishWrapper.eq(SetmealDish::getSetmealId, setmeal.getId());
-        dto.setSetmealDishes(dishService.list(dishWrapper));
+        //查找出套餐管理菜品，将菜品以dto形式封装进SetmealDto
+       List<SetmealDish> dishList= dishService.list(dishWrapper);
+       List<DishDto> list1=null;
+
+
+        dto.setSetmealDishes(dishList);
         return R.success(dto);
     }
 
