@@ -3,9 +3,7 @@ package com.jdfcc.reggie.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jdfcc.reggie.common.R;
-import com.jdfcc.reggie.dto.DishDto;
 import com.jdfcc.reggie.dto.SetmealDto;
-import com.jdfcc.reggie.entity.Dish;
 import com.jdfcc.reggie.entity.Setmeal;
 import com.jdfcc.reggie.entity.SetmealDish;
 import com.jdfcc.reggie.service.SetMealDishService;
@@ -120,21 +118,19 @@ public class SetMealController {
     }
 
     @GetMapping("/dish/{id}")
-    public R<SetmealDto> getDishDto(@PathVariable Long id) {
+    public R getDishDto(@PathVariable Long id) {
         LambdaQueryWrapper<Setmeal> setmealWrapper = new LambdaQueryWrapper<>();
         setmealWrapper.eq(Setmeal::getId, id);
         Setmeal setmeal = service.getOne(setmealWrapper);
-        SetmealDto dto = new SetmealDto();
-        BeanUtils.copyProperties(setmeal, dto);
-        LambdaQueryWrapper<SetmealDish> dishWrapper = new LambdaQueryWrapper<>();
-        dishWrapper.eq(SetmealDish::getSetmealId, setmeal.getId());
-        //查找出套餐管理菜品，将菜品以dto形式封装进SetmealDto
-       List<SetmealDish> dishList= dishService.list(dishWrapper);
-       List<DishDto> list1=null;
+//        SetmealDto dto = new SetmealDto();
+//        BeanUtils.copyProperties(setmeal, dto);
+//        LambdaQueryWrapper<SetmealDish> dishWrapper = new LambdaQueryWrapper<>();
+//        dishWrapper.eq(SetmealDish::getSetmealId, setmeal.getId());
+//        //查找出套餐管理菜品，将菜品以dto形式封装进SetmealDto
+//       List<SetmealDish> dishList= dishService.list(dishWrapper);
+//       dto.setSetmealDishes(dishList);
 
-
-        dto.setSetmealDishes(dishList);
-        return R.success(dto);
+        return R.success(setmeal);
     }
 
 }

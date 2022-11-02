@@ -60,6 +60,7 @@ public class LoginCheckFilter implements Filter {
 
         log.info("User not logged in: {} ", requestURI);
         response.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
+
     }
 
     /**
