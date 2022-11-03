@@ -60,6 +60,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
             DishDto dto = new DishDto();
             BeanUtils.copyProperties(temp, dto);//属性拷贝
             Long id = temp.getCategoryId();
+
             Category category = categoryService.getById(id);
             String categoryName = category.getName();
             dto.setCategoryName(categoryName);
