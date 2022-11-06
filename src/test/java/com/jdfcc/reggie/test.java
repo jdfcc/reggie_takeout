@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,8 +68,24 @@ public class test {
     @Test
     public void testRedis() {
         ValueOperations valueOperations = redisTemplate.opsForValue();
-        valueOperations.set("jdfcc1","hhh");
+        valueOperations.set("jdfcc1", "hhh");
     }
 
+    @Test
+    public void testZSet() {
+        ZSetOperations zSetOperations = redisTemplate.opsForZSet();
+        zSetOperations.add("range", "a", 1);
+        zSetOperations.add("range", "b", 2);
+        zSetOperations.add("range", "c", 3);
+        zSetOperations.add("range", "d", 4);
+        zSetOperations.remove("range", "a", "b");
+        System.out.println(zSetOperations.range("range", 0, -1));
+    }
+
+    @Test
+    public void testCommon(){
+        System.out.println( redisTemplate.keys("*"));
+
+    }
 
 }

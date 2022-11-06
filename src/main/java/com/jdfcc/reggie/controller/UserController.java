@@ -10,6 +10,9 @@ import com.jdfcc.reggie.utils.SMSUtils;
 import com.jdfcc.reggie.utils.ValidateCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -28,6 +32,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 发送手机验证码
@@ -44,12 +51,16 @@ public class UserController {
         log.info("Verification:{}", code);
 //        发送验证码
 //        SMSUtils.sendMessage("瑞吉外卖","empty",phone,code);
-        session.setAttribute(phone, code);
+//        session.setAttribute(phone, code);
+
+        redisTemplate.opsForValue().set(phone,code,5, TimeUnit.MINUTES);//将验证码存储进redis，设置过期时间为5分钟
+
         return R.success("Verification code sent successfully");
     }
 
     /**
      * 登录
+     *
      * @param map
      * @param session
      * @return
@@ -58,7 +69,10 @@ public class UserController {
     public R<User> login(@RequestBody Map map, HttpSession session) {
         String phone = (String) map.get("phone");
         String code = (String) map.get("code");
-        String codeInSession = (String) session.getAttribute(phone);
+
+//        String codeInSession = (String) session.getAttribute(phone);
+        String codeInSession = (String) redisTemplate.opsForValue().get(phone);//从redis里获取验证码
+
         if (code != null && code.equals(codeInSession)) {
             LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(User::getPhone, phone);
@@ -68,18 +82,22 @@ public class UserController {
                 user.setPhone(phone);
                 userService.save(user);
             }
-            session.setAttribute("user",user.getId());
+
+            session.setAttribute("user", user.getId());
+            //登录成功，删除缓存里面的验证码
+            redisTemplate.delete(phone);
             return R.success(user);
         } else return R.error("Failed login");
     }
 
     /**
      * 登出
+     *
      * @param request
      * @return
      */
     @PostMapping("/loginout")
-    public R<String> logOut(HttpServletRequest request){
+    public R<String> logOut(HttpServletRequest request) {
         request.getSession().removeAttribute("user");
         return R.success("Successful logOut");
     }

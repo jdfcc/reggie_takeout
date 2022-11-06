@@ -84,29 +84,16 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
     }
 
     @Override
-    public R<String> stopSeal(String id) {
-        String[] ids = id.split(",");
-        for (String val : ids) {
-            LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper();
-            wrapper.eq(Dish::getId, val);
-            Dish dish = mapper.selectOne(wrapper);
-            dish.setStatus(0);
-            mapper.update(dish, wrapper);
-        }
-        return R.success("Successfully set status=0");
-    }
-
-    @Override
-    public R<String> beginSeal(String id) {
+    public R<String> setStatus(String id, String status) {
         String[] ids = id.split(",");
         for (String val : ids) {
             LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper();
             wrapper.eq(Dish::getId, val);
             Dish dish = mapper.select(val);
-            dish.setStatus(1);
+            dish.setStatus(Integer.valueOf(status));
             mapper.update(dish, wrapper);
         }
-        return R.success("Successfully set status=1");
+        return R.success("Successfully set status=" + status);
     }
 
     /**

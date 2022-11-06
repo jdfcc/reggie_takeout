@@ -9,9 +9,7 @@ import com.jdfcc.reggie.entity.Dish;
 public interface DishService extends IService<Dish> {
 
 
-    public R<String> stopSeal(String id);
-
-    public R<String> beginSeal(String id);
+    public R<String> setStatus(String id,String status);
 
     public void saveWithFlavor(DishDto dish);
 
