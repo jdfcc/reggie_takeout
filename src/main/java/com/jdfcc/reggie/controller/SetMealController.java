@@ -11,6 +11,9 @@ import com.jdfcc.reggie.service.SetMealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -27,6 +30,9 @@ public class SetMealController {
     @Autowired
     private SetMealDishService dishService;
 
+    @Autowired
+    private CacheManager cacheManager;
+
 
     @GetMapping("/page")
     public R<Page<SetmealDto>> selectPage(int page, int pageSize, String name) {
@@ -35,6 +41,7 @@ public class SetMealController {
     }
 
     @PostMapping
+    @CacheEvict(value = "setmealCache",allEntries = true)
     public R<String> save(@RequestBody SetmealDto setmealDto) {
         service.saveWithCategory(setmealDto);
         return R.success("Successfully save");
@@ -68,12 +75,14 @@ public class SetMealController {
      * @return
      */
     @PutMapping
+    @CacheEvict(value = "setmealCache",allEntries = true)
     public R<String> update(@RequestBody SetmealDto dto) {
         service.update(dto);
         return R.success("Successfully update");
     }
 
     @DeleteMapping
+    @CacheEvict(value = "setmealCache",allEntries = true)
     public R<String> delete(String ids) {
         String[] vals = ids.split(",");
         for (String temp : vals) {
@@ -83,6 +92,7 @@ public class SetMealController {
     }
 
     @PostMapping("/status/{status}")
+    @CacheEvict(value = "setmealCache",allEntries = true)
     public R<String> SetStatus(@PathVariable int status, String ids) {
         log.info("Id: {},Status: {}", ids, status);
         String[] vals = ids.split(",");
@@ -95,6 +105,7 @@ public class SetMealController {
      * 根据套餐id获取套餐
      */
     @GetMapping("/list")
+    @Cacheable(value = "setmealCache",key="#setmeal.categoryId+'_'+#setmeal.status")
     public R<List<Setmeal>> getSetMeal(Setmeal setmeal) {
         //获得该分类下所有套餐
         LambdaQueryWrapper<Setmeal> wrapper = new LambdaQueryWrapper<>();
