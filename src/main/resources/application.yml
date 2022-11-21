@@ -1,5 +1,5 @@
 server:
-  port: 8177
+  port: 8080
 spring:
   application:
     name: reggie_take_out
@@ -10,7 +10,7 @@ spring:
       username: root
       password: 1234
   redis:
-    host: 127.0.0.1
+    host: 120.55.80.133
     password: 123456
     port: 6379
     database: 0 #默认操作数据库
